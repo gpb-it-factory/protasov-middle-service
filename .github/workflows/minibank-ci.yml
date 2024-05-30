@@ -1,0 +1,26 @@
+name: Java Build and Test
+
+on:
+  pull_request:
+    branches: [ "trunk" ]
+    types: [opened, reopened, synchronize]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Clone repository'
+        uses: actions/checkout@v4
+
+      - name: 'Install JDK'
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'liberica'
+          java-version: '21'
+
+      - name: 'Build'
+        run: ./gradlew build -x test
+
+      - name: 'Run tests'
+        run: ./gradlew test
