@@ -1,18 +1,18 @@
 package ru.gazprombank.middle.client;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
 import ru.gazprombank.middle.dto.UserCreation;
-
-import java.util.HashMap;
+import ru.gazprombank.middle.repository.UserRepository;
 
 @Component
 public class InMemoryBackendClientImpl implements BackendClient {
-    HashMap<String, UserCreation> users;
-
-    public InMemoryBackendClientImpl() {
-        this.users = new HashMap<>();
+    private final UserRepository userRepository;
+    @Autowired
+    public InMemoryBackendClientImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
     @Override
     public UserRegistrationResponse createUser(UserRegistrationRequest userRegistrationRequest) {
@@ -22,15 +22,10 @@ public class InMemoryBackendClientImpl implements BackendClient {
     }
 
     private UserRegistrationResponse validateAndRegisterUser(UserCreation userCreation) {
-        String userName = userCreation.userName();
-        if (userExists(userName)) {
+        if (userRepository.existsById(userCreation.userId())) {
             return new UserRegistrationResponse(false, "Такой пользователь уже существует.");
         }
-        users.put(userName, userCreation);
+        userRepository.save(userCreation);
         return new UserRegistrationResponse(true, null);
-
-    }
-    private boolean userExists(String userName) {
-        return users.containsKey(userName);
     }
 }

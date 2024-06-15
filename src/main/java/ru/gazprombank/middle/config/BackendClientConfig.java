@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import ru.gazprombank.middle.client.BackendClient;
 import ru.gazprombank.middle.client.HttpBackendClientImpl;
 import ru.gazprombank.middle.client.InMemoryBackendClientImpl;
+import ru.gazprombank.middle.repository.UserRepository;
 
 @Configuration
 public class BackendClientConfig {
@@ -15,8 +16,8 @@ public class BackendClientConfig {
     @Bean
     @Primary
     @ConditionalOnProperty(name = "backend.client-type", havingValue = "inMemory")
-    public BackendClient inMemoryBackendClient() {
-        return new InMemoryBackendClientImpl();
+    public BackendClient inMemoryBackendClient(UserRepository userRepository) {
+        return new InMemoryBackendClientImpl(userRepository);
     }
 
     @Bean

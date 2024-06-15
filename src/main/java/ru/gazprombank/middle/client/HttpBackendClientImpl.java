@@ -60,31 +60,3 @@ public class HttpBackendClientImpl implements BackendClient {
                 .orElse(new UserRegistrationResponse(false, "Нет ответа от сервера."));
     }
 }
-
-
-    /*@Override
-    public BackendResponse createUser(UserRegistration request) {
-        WebClient.ResponseSpec response = webClient.post()
-                .uri(registrationUrl)
-                .bodyValue(request)
-                .retrieve();
-
-        Optional<ResponseEntity<String>> optionalResponse =
-                Optional.ofNullable(response.toEntity(String.class).block());
-        return processResponse(optionalResponse);
-    }
-    private ResponseEntity<?> processResponse(Optional<ResponseEntity<String>> response) {
-        return response.map(entityResponse -> {
-            HttpStatusCode status = entityResponse.getStatusCode();
-
-            if (status.equals(HttpStatus.CONFLICT)) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body(entityResponse.getBody());
-            } else if (!status.is2xxSuccessful()) {
-                return ResponseEntity.status(status).build();
-            }
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        }).orElseGet(() ->
-                ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
-        );
-    }
-}*/
