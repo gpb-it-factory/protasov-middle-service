@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.gazprombank.middle.client.BackendClient;
 import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
+
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
 

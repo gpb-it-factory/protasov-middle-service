@@ -12,6 +12,9 @@ import ru.gazprombank.middle.dto.UserRegistrationRequest;
 
 import java.util.Optional;
 
+import static ru.gazprombank.middle.util.ErrorMessages.REGISTRATION_ERROR;
+import static ru.gazprombank.middle.util.ErrorMessages.SERVER_ERROR;
+
 @Component
 public class HttpBackendClientImpl implements BackendClient {
     private final WebClient webClient;
@@ -31,7 +34,7 @@ public class HttpBackendClientImpl implements BackendClient {
             ResponseEntity<String> entityResponse = sendRequest(request);
             return processResponse(entityResponse);
         } catch (Exception e) {
-            return new UserRegistrationResponse(false, "Internal server error");
+            return new UserRegistrationResponse(false, SERVER_ERROR);
         }
     }
 
@@ -52,11 +55,11 @@ public class HttpBackendClientImpl implements BackendClient {
                     } else if (status == HttpStatus.CONFLICT) {
                         return new UserRegistrationResponse(false, entity.getBody());
                     } else if (status.is5xxServerError()) {
-                        return new UserRegistrationResponse(false, "Ошибка сервера.");
+                        return new UserRegistrationResponse(false, SERVER_ERROR);
                     } else {
-                        return new UserRegistrationResponse(false, "Ошибка при обработке запроса.");
+                        return new UserRegistrationResponse(false, REGISTRATION_ERROR);
                     }
                 })
-                .orElse(new UserRegistrationResponse(false, "Нет ответа от сервера."));
+                .orElse(new UserRegistrationResponse(false, SERVER_ERROR));
     }
 }
