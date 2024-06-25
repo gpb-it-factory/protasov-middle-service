@@ -5,6 +5,8 @@ spring:
 backend:
     register:
         url: http://localhost:8082/v2/users
+    create-account:
+        url: http://localhost:8082/v2/users/{id}/accounts
     client-type: "inMemory"
 
 custom:

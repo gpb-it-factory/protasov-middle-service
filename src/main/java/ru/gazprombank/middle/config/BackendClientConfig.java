@@ -5,9 +5,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.gazprombank.middle.client.BackendClient;
-import ru.gazprombank.middle.client.HttpBackendClientImpl;
-import ru.gazprombank.middle.client.InMemoryBackendClientImpl;
+import ru.gazprombank.middle.client.UserRegistrationClient;
+import ru.gazprombank.middle.client.HttpUserRegistrationClientImpl;
+import ru.gazprombank.middle.client.InMemoryUserRegistrationClientImpl;
 import ru.gazprombank.middle.repository.UserRepository;
 
 @Configuration
@@ -16,13 +16,13 @@ public class BackendClientConfig {
     @Bean
     @Primary
     @ConditionalOnProperty(name = "backend.client-type", havingValue = "inMemory")
-    public BackendClient inMemoryBackendClient(UserRepository userRepository) {
-        return new InMemoryBackendClientImpl(userRepository);
+    public UserRegistrationClient inMemoryBackendClient(UserRepository userRepository) {
+        return new InMemoryUserRegistrationClientImpl(userRepository);
     }
 
     @Bean
     @ConditionalOnProperty(name = "backend.client-type", havingValue = "http")
-    public BackendClient httpBackendClient(WebClient webClient) {
-        return new HttpBackendClientImpl(webClient);
+    public UserRegistrationClient httpBackendClient(WebClient webClient) {
+        return new HttpUserRegistrationClientImpl(webClient);
     }
 }

@@ -16,14 +16,14 @@ import static ru.gazprombank.middle.util.ErrorMessages.REGISTRATION_ERROR;
 import static ru.gazprombank.middle.util.ErrorMessages.SERVER_ERROR;
 
 @Component
-public class HttpBackendClientImpl implements BackendClient {
+public class HttpUserRegistrationClientImpl implements UserRegistrationClient {
     private final WebClient webClient;
 
     @Value("${backend.register.url}")
     private String registrationUrl;
 
     @Autowired
-    public HttpBackendClientImpl(WebClient webClient) {
+    public HttpUserRegistrationClientImpl(WebClient webClient) {
         this.webClient = webClient;
     }
 

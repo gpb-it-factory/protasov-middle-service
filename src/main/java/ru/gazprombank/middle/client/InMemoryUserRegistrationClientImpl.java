@@ -4,28 +4,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
-import ru.gazprombank.middle.dto.UserCreation;
+import ru.gazprombank.middle.dto.UserDTO;
 import ru.gazprombank.middle.repository.UserRepository;
 
 @Component
-public class InMemoryBackendClientImpl implements BackendClient {
+public class InMemoryUserRegistrationClientImpl implements UserRegistrationClient {
     private final UserRepository userRepository;
     @Autowired
-    public InMemoryBackendClientImpl(UserRepository userRepository) {
+    public InMemoryUserRegistrationClientImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
     @Override
     public UserRegistrationResponse createUser(UserRegistrationRequest userRegistrationRequest) {
-        UserCreation userCreation = new UserCreation(userRegistrationRequest.userId(),
+        UserDTO userDTO = new UserDTO(userRegistrationRequest.userId(),
                 userRegistrationRequest.userName());
-        return validateAndRegisterUser(userCreation);
+        return validateAndRegisterUser(userDTO);
     }
 
-    private UserRegistrationResponse validateAndRegisterUser(UserCreation userCreation) {
-        if (userRepository.existsById(userCreation.userId())) {
+    private UserRegistrationResponse validateAndRegisterUser(UserDTO userDTO) {
+        if (userRepository.existsById(userDTO.userId())) {
             return new UserRegistrationResponse(false, "Такой пользователь уже существует.");
         }
-        userRepository.save(userCreation);
+        userRepository.save(userDTO);
         return new UserRegistrationResponse(true, null);
     }
 }

@@ -1,12 +1,11 @@
 package ru.gazprombank.middle.repository;
 
-import org.springframework.stereotype.Repository;
-import ru.gazprombank.middle.dto.UserCreation;
+import ru.gazprombank.middle.dto.UserDTO;
 
 import java.util.Optional;
 
 public interface UserRepository {
-    void save(UserCreation user);
-    Optional<UserCreation> findById(Long userId);
+    void save(UserDTO user);
+    Optional<UserDTO> findById(Long userId);
     boolean existsById(Long userId);
 }
