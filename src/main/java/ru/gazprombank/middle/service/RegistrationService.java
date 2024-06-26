@@ -1,8 +1,8 @@
 package ru.gazprombank.middle.service;
 
-import org.springframework.http.ResponseEntity;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
+import ru.gazprombank.middle.dto.UserRegistrationResponse;
 
 public interface RegistrationService {
-    ResponseEntity<?> registerUser(UserRegistrationRequest request);
+    UserRegistrationResponse registerUser(UserRegistrationRequest request);
 }

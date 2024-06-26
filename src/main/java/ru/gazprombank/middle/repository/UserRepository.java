@@ -1,6 +1,5 @@
 package ru.gazprombank.middle.repository;
 
-import org.springframework.stereotype.Repository;
 import ru.gazprombank.middle.dto.UserCreation;
 
 import java.util.Optional;

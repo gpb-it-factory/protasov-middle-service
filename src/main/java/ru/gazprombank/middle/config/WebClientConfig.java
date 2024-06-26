@@ -16,6 +16,7 @@ public class WebClientConfig {
     private int connectTimeout;
     @Value("${custom.timeout.read}")
     private int readTimeout;
+
     @Bean
     public WebClient webClient(WebClient.Builder builder)  {
         HttpClient httpClient = HttpClient.create()

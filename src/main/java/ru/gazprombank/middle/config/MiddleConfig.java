@@ -5,24 +5,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.web.reactive.function.client.WebClient;
-import ru.gazprombank.middle.client.BackendClient;
-import ru.gazprombank.middle.client.HttpBackendClientImpl;
-import ru.gazprombank.middle.client.InMemoryBackendClientImpl;
 import ru.gazprombank.middle.repository.UserRepository;
+import ru.gazprombank.middle.service.HttpRegistrationService;
+import ru.gazprombank.middle.service.InMemoryRegistrationService;
+import ru.gazprombank.middle.service.RegistrationService;
 
 @Configuration
-public class BackendClientConfig {
+public class MiddleConfig {
 
     @Bean
     @Primary
     @ConditionalOnProperty(name = "backend.client-type", havingValue = "inMemory")
-    public BackendClient inMemoryBackendClient(UserRepository userRepository) {
-        return new InMemoryBackendClientImpl(userRepository);
+    public RegistrationService inMemoryBackendClient(UserRepository userRepository) {
+        return new InMemoryRegistrationService(userRepository);
     }
 
     @Bean
     @ConditionalOnProperty(name = "backend.client-type", havingValue = "http")
-    public BackendClient httpBackendClient(WebClient webClient) {
-        return new HttpBackendClientImpl(webClient);
+    public RegistrationService httpBackendClient(WebClient webClient) {
+        return new HttpRegistrationService(webClient);
     }
 }

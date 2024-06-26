@@ -1,21 +1,21 @@
-package ru.gazprombank.middle.client;
+package ru.gazprombank.middle.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import ru.gazprombank.middle.dto.UserRegistrationResponse;
-import ru.gazprombank.middle.dto.UserRegistrationRequest;
+import org.springframework.stereotype.Service;
 import ru.gazprombank.middle.dto.UserCreation;
+import ru.gazprombank.middle.dto.UserRegistrationRequest;
+import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.repository.UserRepository;
 
-@Component
-public class InMemoryBackendClientImpl implements BackendClient {
+@Service
+public class InMemoryRegistrationService implements RegistrationService {
     private final UserRepository userRepository;
     @Autowired
-    public InMemoryBackendClientImpl(UserRepository userRepository) {
+    public InMemoryRegistrationService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
     @Override
-    public UserRegistrationResponse createUser(UserRegistrationRequest userRegistrationRequest) {
+    public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
         UserCreation userCreation = new UserCreation(userRegistrationRequest.userId(),
                 userRegistrationRequest.userName());
         return validateAndRegisterUser(userCreation);
