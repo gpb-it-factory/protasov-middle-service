@@ -1,0 +1,16 @@
+spring:
+    application:
+        name: middle
+
+backend:
+    register:
+        url: http://localhost:8082/v2/users
+    client-type: "inMemory"
+
+custom:
+    timeout:
+        connect: 5000
+        read: 5000
+
+server:
+    port: 8081
