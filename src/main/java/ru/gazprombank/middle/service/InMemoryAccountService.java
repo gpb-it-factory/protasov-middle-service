@@ -3,6 +3,7 @@ package ru.gazprombank.middle.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.gazprombank.middle.dto.AccountDTO;
 import ru.gazprombank.middle.dto.CreateAccountRequest;
 import ru.gazprombank.middle.dto.CreateAccountResponse;
@@ -16,7 +17,7 @@ import java.util.UUID;
 import static ru.gazprombank.middle.util.ErrorMessages.ACCOUNT_ALREADY_OPENED_ERROR;
 import static ru.gazprombank.middle.util.ErrorMessages.USER_NOT_REGISTERED_ERROR;
 
-@Component
+@Service
 @ConditionalOnProperty(name = "backend.client-type", havingValue = "inMemory")
 public class InMemoryAccountService implements AccountService {
     private final UserRepository userRepository;

@@ -52,7 +52,9 @@ public class UsersController {
         if (response.success()) {
             return ResponseEntity.ok(response.accounts());
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.errorMessage());
+            String message = response.message();
+            HttpStatus status = CreateAccountResponse.determineStatus(message);
+            return ResponseEntity.status(status).body(message);
         }
     }
 }

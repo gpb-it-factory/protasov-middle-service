@@ -4,12 +4,12 @@ spring:
 
 backend:
     register:
-        url: http://84.201.135.27:8080/v2/users
+        url: http://localhost:8082/v2/users
     create-account:
-        url: http://84.201.135.27:8080/v2/users/{id}/accounts
+        url: http://localhost:8082/v2/users/{id}/accounts
     current-balance:
-        url: http://84.201.135.27:8080/v2/users/{id}/accounts
-    client-type: "http"
+        url: http://localhost:8082/v2/users/{id}/accounts
+    client-type: "inMemory"
 
 custom:
     timeout:

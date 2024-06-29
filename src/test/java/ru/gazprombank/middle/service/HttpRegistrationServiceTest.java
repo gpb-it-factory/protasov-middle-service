@@ -19,11 +19,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @TestPropertySource(locations = "classpath:application-test.yml")
-class HttpRegistrationServiceTests {
+class HttpRegistrationServiceTest {
     private WireMockServer wireMockServer;
 
     private HttpRegistrationService registrationService;
-    UserRegistrationRequest request;
+    private UserRegistrationRequest request;
 
     private static final String REGISTRATION_URL = "/v2/users";
     private static final int PORT = 8999;

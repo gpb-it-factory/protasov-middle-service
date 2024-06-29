@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,7 +16,7 @@ import java.util.List;
 
 import static ru.gazprombank.middle.util.ErrorMessages.*;
 
-@Component
+@Service
 @ConditionalOnProperty(name = "backend.client-type", havingValue = "http")
 public class HttpAccountService implements AccountService {
     private final WebClient webClient;

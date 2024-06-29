@@ -1,3 +1,5 @@
 backend.register.url=http://localhost:8999/v2/users
 custom.timeout.connect=5000
 custom.timeout.read=5000
+
+backend.client-type=http

@@ -13,3 +13,16 @@ Middle-сервис является центральной частью про�
 - **JDK** версия 21.0.3
 
 ## Запуск проекта
+
+Linux/MacOS:
+
+1. Клонирование репозитория:
+```
+$ git clone https://github.com/gpb-it-factory/protasov-telegram-bot.git
+$ cd protasov-telegram-bot
+```
+2. Запуск:
+
+```
+$ ./gradlew bootRun
+```
