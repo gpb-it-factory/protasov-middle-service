@@ -4,10 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.gazprombank.middle.dto.CreateAccountRequest;
-import ru.gazprombank.middle.dto.CreateAccountResponse;
-import ru.gazprombank.middle.dto.UserRegistrationRequest;
-import ru.gazprombank.middle.dto.UserRegistrationResponse;
+import ru.gazprombank.middle.dto.*;
 import ru.gazprombank.middle.service.AccountService;
 import ru.gazprombank.middle.service.RegistrationService;
 
@@ -45,6 +42,17 @@ public class UsersController {
             String message = response.message();
             HttpStatus status = CreateAccountResponse.determineStatus(message);
             return ResponseEntity.status(status).body(message);
+        }
+    }
+
+    @GetMapping("/{id}/accounts")
+    public ResponseEntity<?> getCurrentBalance(@PathVariable Long id) {
+        CurrentBalanceResponse response = accountService.getCurrentBalance(id);
+
+        if (response.success()) {
+            return ResponseEntity.ok(response.accounts());
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response.errorMessage());
         }
     }
 }

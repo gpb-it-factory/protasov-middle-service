@@ -6,9 +6,11 @@ import org.springframework.stereotype.Component;
 import ru.gazprombank.middle.dto.AccountDTO;
 import ru.gazprombank.middle.dto.CreateAccountRequest;
 import ru.gazprombank.middle.dto.CreateAccountResponse;
+import ru.gazprombank.middle.dto.CurrentBalanceResponse;
 import ru.gazprombank.middle.repository.AccountRepository;
 import ru.gazprombank.middle.repository.UserRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 import static ru.gazprombank.middle.util.ErrorMessages.ACCOUNT_ALREADY_OPENED_ERROR;
@@ -26,6 +28,7 @@ public class InMemoryAccountService implements AccountService {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
     }
+
     @Override
     public CreateAccountResponse createAccount(Long id, CreateAccountRequest request) {
         if (!userRepository.existsById(id)) {
@@ -43,5 +46,17 @@ public class InMemoryAccountService implements AccountService {
         accountRepository.save(id, newAccount);
 
         return new CreateAccountResponse(true, null);
+    }
+
+    @Override
+    public CurrentBalanceResponse getCurrentBalance(Long id) {
+        if (!userRepository.existsById(id)) {
+            return new CurrentBalanceResponse(
+                    false, null, USER_NOT_REGISTERED_ERROR);
+        }
+
+        List<AccountDTO> accounts = accountRepository.findByUserId(id);
+
+        return new CurrentBalanceResponse(true, accounts, null);
     }
 }
