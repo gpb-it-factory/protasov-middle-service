@@ -1,10 +1,11 @@
 package ru.gazprombank.middle.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -20,6 +21,7 @@ import static ru.gazprombank.middle.util.ErrorMessages.*;
 @ConditionalOnProperty(name = "backend.client-type", havingValue = "http")
 public class HttpAccountService implements AccountService {
     private final WebClient webClient;
+    private final ObjectMapper objectMapper;
 
     @Value("${backend.create-account.url}")
     private String createAccountUrl;
@@ -28,6 +30,7 @@ public class HttpAccountService implements AccountService {
 
     @Autowired
     public HttpAccountService(WebClient webClient) {
+        this.objectMapper = new ObjectMapper();
         this.webClient = webClient;
     }
 
@@ -38,8 +41,12 @@ public class HttpAccountService implements AccountService {
                     .uri(createAccountUrl, id)
                     .bodyValue(request)
                     .retrieve()
-                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
-                            this::handleErrorResponse)
+                    .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(body -> Mono.fromCallable(() -> {
+                                ErrorResponse errorResponse = objectMapper.readValue(body, ErrorResponse.class);
+                                    throw new ResponseStatusException(response.statusCode(),
+                                            errorResponse.message());
+                            })))
                     .toBodilessEntity()
                     .map(response -> new CreateAccountResponse(true, null))
                     .onErrorResume(ResponseStatusException.class, e ->
@@ -56,8 +63,12 @@ public class HttpAccountService implements AccountService {
             return webClient.get()
                     .uri(getBalanceUrl, id)
                     .retrieve()
-                    .onStatus(status -> status.is4xxClientError() || status.is5xxServerError(),
-                            this::handleErrorResponse)
+                    .onStatus(HttpStatusCode::isError, response -> response.bodyToMono(String.class)
+                            .flatMap(body -> Mono.fromCallable(() -> {
+                                ErrorResponse errorResponse = objectMapper.readValue(body, ErrorResponse.class);
+                                throw new ResponseStatusException(response.statusCode(),
+                                        errorResponse.message());
+                            })))
                     .bodyToMono(new ParameterizedTypeReference<List<AccountDTO>>() {})
                     .map(accounts -> new CurrentBalanceResponse(true, accounts, null))
                     .onErrorResume(ResponseStatusException.class, e ->
@@ -66,10 +77,5 @@ public class HttpAccountService implements AccountService {
         } catch (Exception e) {
             return new CurrentBalanceResponse(false, null, SERVER_ERROR);
         }
-    }
-
-    private Mono<Throwable> handleErrorResponse(ClientResponse response) {
-        return response.bodyToMono(ErrorResponse.class)
-                .map(error -> new ResponseStatusException(response.statusCode(), error.message()));
     }
 }
