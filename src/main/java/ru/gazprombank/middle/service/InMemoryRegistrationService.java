@@ -3,7 +3,7 @@ package ru.gazprombank.middle.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import ru.gazprombank.middle.dto.UserCreation;
+import ru.gazprombank.middle.dto.UserDTO;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
 import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.repository.UserRepository;
@@ -18,16 +18,16 @@ public class InMemoryRegistrationService implements RegistrationService {
     }
     @Override
     public UserRegistrationResponse registerUser(UserRegistrationRequest userRegistrationRequest) {
-        UserCreation userCreation = new UserCreation(userRegistrationRequest.userId(),
+        UserDTO userDTO = new UserDTO(userRegistrationRequest.userId(),
                 userRegistrationRequest.userName());
-        return validateAndRegisterUser(userCreation);
+        return validateAndRegisterUser(userDTO);
     }
 
-    private UserRegistrationResponse validateAndRegisterUser(UserCreation userCreation) {
-        if (userRepository.existsById(userCreation.userId())) {
+    private UserRegistrationResponse validateAndRegisterUser(UserDTO userDTO) {
+        if (userRepository.existsById(userDTO.userId())) {
             return new UserRegistrationResponse(false, "Такой пользователь уже существует.");
         }
-        userRepository.save(userCreation);
+        userRepository.save(userDTO);
         return new UserRegistrationResponse(true, null);
     }
 }

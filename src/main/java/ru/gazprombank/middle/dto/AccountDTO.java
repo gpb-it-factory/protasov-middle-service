@@ -1,5 +1,7 @@
 package ru.gazprombank.middle.dto;
 
 
-public record AccountDTO(String accountId, String accountName, String amount) {
+import java.math.BigDecimal;
+
+public record AccountDTO(String accountId, String accountName, BigDecimal amount) {
 }

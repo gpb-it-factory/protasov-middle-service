@@ -24,4 +24,11 @@ public class InMemoryAccountRepository implements AccountRepository {
     public boolean existsByUserId(Long userId) {
         return accounts.containsKey(userId);
     }
+
+    @Override
+    public void update(Long userId, AccountDTO account) {
+        List<AccountDTO> userAccounts = accounts.get(userId);
+        userAccounts.removeIf(acc -> acc.accountId().equals(account.accountId()));
+        userAccounts.add(account);
+    }
 }
