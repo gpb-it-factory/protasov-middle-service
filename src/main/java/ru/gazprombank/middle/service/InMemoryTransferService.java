@@ -44,6 +44,10 @@ public class InMemoryTransferService implements TransferService {
         Long fromUserId = fromUser.get().userId();
         Long toUserId = toUser.get().userId();
 
+        if (fromUserId.equals(toUserId)) {
+            return new TransferResponse(false, null, SELF_TRANSFER_ERROR);
+        }
+
         List<AccountDTO> fromAccounts = accountRepository.findByUserId(fromUserId);
         if (fromAccounts.isEmpty()) {
             return new TransferResponse(false, null,
@@ -58,7 +62,7 @@ public class InMemoryTransferService implements TransferService {
 
         AccountDTO fromAccount = fromAccounts.getFirst();
 
-        BigDecimal fromBalance = fromAccount.amount();
+        BigDecimal fromBalance = fromAccount.getAmount();
         BigDecimal transferAmount = new BigDecimal(request.amount());
 
         if (fromBalance.compareTo(transferAmount) < 0) {
@@ -69,12 +73,12 @@ public class InMemoryTransferService implements TransferService {
         AccountDTO toAccount = toAccounts.getFirst();
 
         BigDecimal newFromBalance = fromBalance.subtract(transferAmount);
-        BigDecimal newToBalance = toAccount.amount().add(transferAmount);
 
-        accountRepository.update(fromUserId,
-                new AccountDTO(fromAccount.accountId(), fromAccount.accountName(), newFromBalance));
-        accountRepository.update(toUserId,
-                new AccountDTO(toAccount.accountId(), toAccount.accountName(), newToBalance));
+        accountRepository.update(fromUserId, fromAccount.getAccountId(), newFromBalance);
+
+
+        BigDecimal newToBalance = toAccount.getAmount().add(transferAmount);
+        accountRepository.update(toUserId, toAccount.getAccountId(), newToBalance);
 
         String transferId = UUID.randomUUID().toString();
         return new TransferResponse(true, transferId, null);

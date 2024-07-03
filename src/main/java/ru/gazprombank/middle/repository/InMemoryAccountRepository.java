@@ -3,6 +3,7 @@ package ru.gazprombank.middle.repository;
 import org.springframework.stereotype.Repository;
 import ru.gazprombank.middle.dto.AccountDTO;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,9 +27,15 @@ public class InMemoryAccountRepository implements AccountRepository {
     }
 
     @Override
-    public void update(Long userId, AccountDTO account) {
+    public void update(Long userId, String accountId, BigDecimal newAmount) {
         List<AccountDTO> userAccounts = accounts.get(userId);
-        userAccounts.removeIf(acc -> acc.accountId().equals(account.accountId()));
-        userAccounts.add(account);
+        if (userAccounts != null) {
+            for (AccountDTO account : userAccounts) {
+                if (account.getAccountId().equals(accountId)) {
+                    account.setAmount(newAmount);
+                    break;
+                }
+            }
+        }
     }
 }

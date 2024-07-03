@@ -10,5 +10,5 @@ public class ErrorMessages {
     public static final String NO_ACCOUNT_ERROR = "У Вас нет открытого счета.";
     public static final String RECIPIENT_NO_ACCOUNT_ERROR = "У получателя нет открытого счета.";
     public static final String INSUFFICIENT_FUNDS_ERROR = "Недостаточно средств для перевода.";
-
+    public static final String SELF_TRANSFER_ERROR = "Вы не можете перевести себе на тот же счет.";
 }
