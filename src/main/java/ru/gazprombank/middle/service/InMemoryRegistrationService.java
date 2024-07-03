@@ -1,6 +1,7 @@
 package ru.gazprombank.middle.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import ru.gazprombank.middle.dto.UserCreation;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
@@ -8,6 +9,7 @@ import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.repository.UserRepository;
 
 @Service
+@ConditionalOnProperty(name = "backend.client-type", havingValue = "inMemory")
 public class InMemoryRegistrationService implements RegistrationService {
     private final UserRepository userRepository;
     @Autowired

@@ -2,6 +2,7 @@ package ru.gazprombank.middle.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import static ru.gazprombank.middle.util.ErrorMessages.REGISTRATION_ERROR;
 import static ru.gazprombank.middle.util.ErrorMessages.SERVER_ERROR;
 
 @Service
+@ConditionalOnProperty(name = "backend.client-type", havingValue = "http")
 public class HttpRegistrationService implements RegistrationService {
     private final WebClient webClient;
 
