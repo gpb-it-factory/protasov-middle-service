@@ -113,8 +113,8 @@ public class HttpAccountServiceTest {
 
         CurrentBalanceResponse response = accountService.getCurrentBalance(userId);
 
-        assertEquals(ACCOUNT_NAME, response.accounts().getFirst().accountName());
-        assertEquals( new BigDecimal("1000.00"), response.accounts().getFirst().amount());
+        assertEquals(ACCOUNT_NAME, response.accounts().getFirst().getAccountName());
+        assertEquals( new BigDecimal("1000.00"), response.accounts().getFirst().getAmount());
     }
 
     @Test
