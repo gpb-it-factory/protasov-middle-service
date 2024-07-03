@@ -2,13 +2,13 @@ package ru.gazprombank.middle.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import reactor.core.publisher.Mono;
+import ru.gazprombank.middle.config.MiddleProperties;
 import ru.gazprombank.middle.dto.ErrorResponse;
 import ru.gazprombank.middle.dto.TransferRequest;
 import ru.gazprombank.middle.dto.TransferResponse;
@@ -21,13 +21,13 @@ public class HttpTransferService implements TransferService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
-    @Value("${backend.transfer.url}")
     private String transferUrl;
 
     @Autowired
-    public HttpTransferService(WebClient webClient) {
+    public HttpTransferService(WebClient webClient, MiddleProperties middleProperties) {
         this.webClient = webClient;
         this.objectMapper = new ObjectMapper();
+        this.transferUrl = middleProperties.getTransfer().getUrl();
     }
 
     @Override

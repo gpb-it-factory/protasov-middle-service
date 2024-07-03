@@ -2,15 +2,14 @@ package ru.gazprombank.middle.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
+import ru.gazprombank.middle.config.MiddleProperties;
 import ru.gazprombank.middle.dto.*;
 
 import java.util.List;
@@ -23,15 +22,15 @@ public class HttpAccountService implements AccountService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
-    @Value("${backend.create-account.url}")
     private String createAccountUrl;
-    @Value("${backend.current-balance.url}")
     private String getBalanceUrl;
 
     @Autowired
-    public HttpAccountService(WebClient webClient) {
+    public HttpAccountService(WebClient webClient, MiddleProperties middleProperties) {
         this.objectMapper = new ObjectMapper();
         this.webClient = webClient;
+        this.createAccountUrl = middleProperties.getCreateAccount().getUrl();
+        this.getBalanceUrl = middleProperties.getCurrentBalance().getUrl();
     }
 
     @Override
