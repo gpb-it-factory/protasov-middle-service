@@ -21,7 +21,7 @@ public class HttpTransferService implements TransferService {
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
 
-    private String transferUrl;
+    private final String transferUrl;
 
     @Autowired
     public HttpTransferService(WebClient webClient, MiddleProperties middleProperties) {

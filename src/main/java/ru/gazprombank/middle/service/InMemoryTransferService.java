@@ -32,50 +32,58 @@ public class InMemoryTransferService implements TransferService {
     @Override
     public TransferResponse transfer(TransferRequest request) {
         Optional<UserDTO> fromUser = userRepository.findByUsername(request.from());
-        if (fromUser.isEmpty()) {
-            return new TransferResponse(false, null, USER_NOT_REGISTERED_ERROR);
-        }
-
         Optional<UserDTO> toUser = userRepository.findByUsername(request.to());
+
+        return validateUsers(fromUser, toUser)
+                .or(() -> validateAccounts(fromUser.get(), toUser.get()))
+                .orElseGet(() -> executeTransfer(fromUser.get().userId(),
+                        toUser.get().userId(), request.amount()));
+    }
+
+    private Optional<TransferResponse> validateUsers(Optional<UserDTO> fromUser, Optional<UserDTO> toUser) {
+        if (fromUser.isEmpty()) {
+            return Optional.of(new TransferResponse(false, null, USER_NOT_REGISTERED_ERROR));
+        }
+
         if (toUser.isEmpty()) {
-            return new TransferResponse(false, null, RECIPIENT_NOT_FOUND_ERROR);
+            return Optional.of(new TransferResponse(false, null, RECIPIENT_NOT_FOUND_ERROR));
         }
 
-        Long fromUserId = fromUser.get().userId();
-        Long toUserId = toUser.get().userId();
-
-        if (fromUserId.equals(toUserId)) {
-            return new TransferResponse(false, null, SELF_TRANSFER_ERROR);
+        if (fromUser.get().userId().equals(toUser.get().userId())) {
+            return Optional.of(new TransferResponse(false, null, SELF_TRANSFER_ERROR));
         }
 
-        List<AccountDTO> fromAccounts = accountRepository.findByUserId(fromUserId);
+        return Optional.empty();
+    }
+
+    private Optional<TransferResponse> validateAccounts(UserDTO fromUser, UserDTO toUser) {
+        List<AccountDTO> fromAccounts = accountRepository.findByUserId(fromUser.userId());
         if (fromAccounts.isEmpty()) {
-            return new TransferResponse(false, null,
-                    NO_ACCOUNT_ERROR);
+            return Optional.of(new TransferResponse(false, null, NO_ACCOUNT_ERROR));
         }
 
-        List<AccountDTO> toAccounts = accountRepository.findByUserId(toUserId);
+        List<AccountDTO> toAccounts = accountRepository.findByUserId(toUser.userId());
         if (toAccounts.isEmpty()) {
-            return new TransferResponse(false, null,
-                    RECIPIENT_NO_ACCOUNT_ERROR);
+            return Optional.of(new TransferResponse(false, null, RECIPIENT_NO_ACCOUNT_ERROR));
         }
 
-        AccountDTO fromAccount = fromAccounts.getFirst();
+        return Optional.empty();
+    }
+
+
+    private TransferResponse executeTransfer(Long fromUserId, Long toUserId, String amount) {
+        BigDecimal transferAmount = new BigDecimal(amount);
+
+        AccountDTO fromAccount = accountRepository.findByUserId(fromUserId).getFirst();
+        AccountDTO toAccount = accountRepository.findByUserId(toUserId).getFirst();
 
         BigDecimal fromBalance = fromAccount.getAmount();
-        BigDecimal transferAmount = new BigDecimal(request.amount());
-
         if (fromBalance.compareTo(transferAmount) < 0) {
-            return new TransferResponse(false, null,
-                    INSUFFICIENT_FUNDS_ERROR);
+            return new TransferResponse(false, null, INSUFFICIENT_FUNDS_ERROR);
         }
 
-        AccountDTO toAccount = toAccounts.getFirst();
-
         BigDecimal newFromBalance = fromBalance.subtract(transferAmount);
-
         accountRepository.update(fromUserId, fromAccount.getAccountId(), newFromBalance);
-
 
         BigDecimal newToBalance = toAccount.getAmount().add(transferAmount);
         accountRepository.update(toUserId, toAccount.getAccountId(), newToBalance);
