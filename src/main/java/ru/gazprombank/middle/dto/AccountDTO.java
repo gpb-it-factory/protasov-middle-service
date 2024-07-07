@@ -1,5 +1,17 @@
 package ru.gazprombank.middle.dto;
 
 
-public record AccountDTO(String accountId, String accountName, String amount) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.math.BigDecimal;
+
+@Setter
+@Getter
+@AllArgsConstructor
+public class AccountDTO {
+    String accountId;
+    String accountName;
+    BigDecimal amount;
 }

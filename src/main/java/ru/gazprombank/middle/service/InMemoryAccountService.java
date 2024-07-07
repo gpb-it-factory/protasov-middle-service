@@ -11,6 +11,7 @@ import ru.gazprombank.middle.dto.CurrentBalanceResponse;
 import ru.gazprombank.middle.repository.AccountRepository;
 import ru.gazprombank.middle.repository.UserRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class InMemoryAccountService implements AccountService {
         String accountId = UUID.randomUUID().toString();
         AccountDTO newAccount = new AccountDTO(accountId,
                 request.accountName(),
-                "5000.00");
+                new BigDecimal("5000.00"));
 
         accountRepository.save(id, newAccount);
 

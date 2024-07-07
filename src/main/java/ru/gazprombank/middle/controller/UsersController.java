@@ -53,7 +53,7 @@ public class UsersController {
             return ResponseEntity.ok(response.accounts());
         } else {
             String message = response.message();
-            HttpStatus status = CreateAccountResponse.determineStatus(message);
+            HttpStatus status = CurrentBalanceResponse.determineStatus(message);
             return ResponseEntity.status(status).body(message);
         }
     }

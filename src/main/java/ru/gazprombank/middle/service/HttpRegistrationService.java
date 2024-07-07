@@ -1,7 +1,6 @@
 package ru.gazprombank.middle.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import ru.gazprombank.middle.config.MiddleProperties;
 import ru.gazprombank.middle.dto.UserRegistrationResponse;
 import ru.gazprombank.middle.dto.UserRegistrationRequest;
 
@@ -20,14 +20,13 @@ import static ru.gazprombank.middle.util.ErrorMessages.SERVER_ERROR;
 public class HttpRegistrationService implements RegistrationService {
     private final WebClient webClient;
 
-    @Value("${backend.register.url}")
     private String registrationUrl;
 
     @Autowired
-    public HttpRegistrationService(WebClient webClient) {
+    public HttpRegistrationService(WebClient webClient, MiddleProperties middleProperties) {
         this.webClient = webClient;
+        this.registrationUrl = middleProperties.getRegister().getUrl();
     }
-
     @Override
     public UserRegistrationResponse registerUser(UserRegistrationRequest request) {
         try {

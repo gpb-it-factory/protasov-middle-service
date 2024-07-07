@@ -9,6 +9,8 @@ backend:
         url: http://localhost:8082/v2/users/{id}/accounts
     current-balance:
         url: http://localhost:8082/v2/users/{id}/accounts
+    transfer:
+        url: http://localhost:8082/v2/transfers
     client-type: "inMemory"
 
 custom:

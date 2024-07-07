@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import ru.gazprombank.middle.dto.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -102,7 +103,7 @@ public class HttpAccountServiceTest {
     @Test
     void getCurrentBalance() throws JsonProcessingException {
         List<AccountDTO> accounts = List.of(
-                new AccountDTO("123", ACCOUNT_NAME, "1000.00")
+                new AccountDTO("123", ACCOUNT_NAME, new BigDecimal("1000.00"))
         );
         stubFor(get(urlEqualTo(GET_BALANCE_URL))
                 .willReturn(aResponse()
@@ -112,8 +113,8 @@ public class HttpAccountServiceTest {
 
         CurrentBalanceResponse response = accountService.getCurrentBalance(userId);
 
-        assertEquals(ACCOUNT_NAME, response.accounts().getFirst().accountName());
-        assertEquals("1000.00", response.accounts().getFirst().amount());
+        assertEquals(ACCOUNT_NAME, response.accounts().getFirst().getAccountName());
+        assertEquals( new BigDecimal("1000.00"), response.accounts().getFirst().getAmount());
     }
 
     @Test
